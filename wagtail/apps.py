@@ -6,7 +6,7 @@ class WagtailAppConfig(AppConfig):
     name = "wagtail"
     label = "wagtailcore"
     verbose_name = _("Wagtail core")
-    default_auto_field = "django.db.models.AutoField"
+    default_auto_field = "django_mongodb.fields.ObjectIdAutoField"
 
     def ready(self):
         from wagtail.models import AbstractPage

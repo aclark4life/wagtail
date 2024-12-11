@@ -9,7 +9,7 @@ class WagtailDocsAppConfig(AppConfig):
     name = "wagtail.documents"
     label = "wagtaildocs"
     verbose_name = _("Wagtail documents")
-    default_auto_field = "django.db.models.AutoField"
+    default_auto_field = "django_mongodb.fields.ObjectIdAutoField"
 
     def ready(self):
         from wagtail.documents.signal_handlers import register_signal_handlers

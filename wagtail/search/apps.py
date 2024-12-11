@@ -12,7 +12,7 @@ class WagtailSearchAppConfig(AppConfig):
     name = "wagtail.search"
     label = "wagtailsearch"
     verbose_name = _("Wagtail search")
-    default_auto_field = "django.db.models.AutoField"
+    default_auto_field = "django_mongodb.fields.ObjectIdAutoField"
 
     def ready(self):
         register_signal_handlers()

@@ -10,7 +10,7 @@ class WagtailImagesAppConfig(AppConfig):
     name = "wagtail.images"
     label = "wagtailimages"
     verbose_name = _("Wagtail images")
-    default_auto_field = "django.db.models.AutoField"
+    default_auto_field = "django_mongodb.fields.ObjectIdAutoField"
     default_attrs = {}
 
     def ready(self):

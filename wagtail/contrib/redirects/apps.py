@@ -6,7 +6,7 @@ class WagtailRedirectsAppConfig(AppConfig):
     name = "wagtail.contrib.redirects"
     label = "wagtailredirects"
     verbose_name = _("Wagtail redirects")
-    default_auto_field = "django.db.models.AutoField"
+    default_auto_field = "django_mongodb.fields.ObjectIdAutoField"
 
     def ready(self):
         from wagtail.signals import page_slug_changed, post_page_move
