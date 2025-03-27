@@ -455,7 +455,10 @@ class EventPage(Page):
 class HeadCountRelatedModelUsingPK(models.Model):
     """Related model that uses a custom primary key (pk) not id"""
 
-    custom_id = models.AutoField(primary_key=True)
+    import django_mongodb_backend
+
+    custom_id = django_mongodb_backend.fields.ObjectIdAutoField(primary_key=True)
+
     event_page = ParentalKey(
         EventPage, on_delete=models.CASCADE, related_name="head_counts"
     )
