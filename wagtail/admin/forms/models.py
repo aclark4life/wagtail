@@ -1,5 +1,6 @@
 import copy
 
+from django import VERSION as DJANGO_VERSION
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
@@ -90,6 +91,13 @@ register_form_field_override(
     override={"widget": widgets.SlugInput},
 )
 
+# Remove the following block when the minimum Django version is >= 5.0.
+if (5, 0) <= DJANGO_VERSION < (6, 0):
+    register_form_field_override(
+        models.URLField,
+        override={"assume_scheme": "https"},
+    )
+
 
 # Callback to allow us to override the default form fields provided for each model field.
 def formfield_for_dbfield(db_field, **kwargs):
@@ -127,10 +135,11 @@ class WagtailAdminModelForm(
         # keep hold of the `for_user` kwarg as well as passing it on to PermissionedForm
         self.for_user = kwargs.get("for_user")
         self.deferred_required_fields = []
+        self.deferred_formset_min_nums = {}
         super().__init__(*args, **kwargs)
 
     def defer_required_fields(self):
-        if self.deferred_required_fields:
+        if self.deferred_required_fields or self.deferred_formset_min_nums:
             # defer_required_fields has already been called
             return
 
@@ -142,7 +151,21 @@ class WagtailAdminModelForm(
             except KeyError:
                 pass
 
+        for name, formset in self.formsets.items():
+            for form in formset:
+                form.defer_required_fields()
+            if formset.min_num is not None:
+                self.deferred_formset_min_nums[name] = formset.min_num
+                formset.min_num = 0
+
     def restore_required_fields(self):
+        for name, formset in self.formsets.items():
+            for form in formset:
+                form.restore_required_fields()
+            if name in self.deferred_formset_min_nums:
+                formset.min_num = self.deferred_formset_min_nums[name]
+        self.deferred_formset_min_nums = {}
+
         for field_name in self.deferred_required_fields:
             self.fields[field_name].required = True
         self.deferred_required_fields = []
